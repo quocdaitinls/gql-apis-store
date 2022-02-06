@@ -3,12 +3,21 @@
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
+  "files": [
+    "build/**/*"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/quocdaitinls/gql-apis-store"
+  },
+  "homepage": "https://github.com/quocdaitinls/gql-apis-store",
   "scripts": {
     "build": "tsc",
     "pub": "git add . && git commit -m \"Update\" && npm version patch && npm run build && npm publish"
   },
   "keywords": [],
-  "author": "",
+  "author": "Quoc Dai",
+  "email": "quocdaitinls@gmail.com",
   "license": "ISC",
   "dependencies": {
     "@types/react": "^17.0.39",
