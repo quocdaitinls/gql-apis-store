@@ -1,7 +1,6 @@
 import {GraphQLClient, RequestDocument} from "graphql-request";
+import {ApiConfigMap, ApiConfigMapX} from ".";
 import {
-  ApiMap,
-  ApiMapX,
   Builder,
   BuilderMap,
   BuilderMapX,
@@ -17,7 +16,7 @@ export class ApisStore<
   protected _config: ClientApisConfig<BM>;
   protected _client: GraphQLClient;
   protected _builderMap: BuilderMapX<IBM>;
-  protected _apiMap: ApiMapX<IBM>;
+  protected _apiMap: ApiConfigMapX<IBM>;
 
   constructor(config: ClientApisConfig<BM>) {
     this._config = config;
@@ -41,11 +40,11 @@ export class ApisStore<
   }
 
   protected createApis() {
-    let result: ApiMap = {};
+    let result: ApiConfigMap = {};
     for (let name in this._builderMap) {
       result[name] = this._builderMap[name](this._client);
     }
-    this._apiMap = result as ApiMapX<IBM>;
+    this._apiMap = result as ApiConfigMapX<IBM>;
   }
 
   get config() {

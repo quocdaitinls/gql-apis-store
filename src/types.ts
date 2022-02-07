@@ -13,11 +13,17 @@ export type ClientApisRequestOptions<V = Variables> = Omit<
   "document"
 >;
 
-export type Api<V = Variables> = (
-  opts?: ClientApisRequestOptions<V>
-) => () => Promise<any>;
+export type Api = () => Promise<any>;
 
-export type Builder<V = Variables> = (client: GraphQLClient) => Api<V>;
+export type ApiConfig<V = Variables> = (
+  opts?: ClientApisRequestOptions<V>
+) => Api;
+
+// export type Api<V = Variables> = (
+//   opts?: ClientApisRequestOptions<V>
+// ) => () => Promise<any>;
+
+export type Builder<V = Variables> = (client: GraphQLClient) => ApiConfig<V>;
 
 export type ClientApisConfig<B extends BuilderMap> = {
   client: {
@@ -31,11 +37,11 @@ export type BuilderMap = {
   [key: string]: Builder<any>;
 };
 
-export type ApiFromBuilder<B extends Builder> = ReturnType<B>;
+export type ApiConfigFromBuilder<B extends Builder> = ReturnType<B>;
 
-export type ApiMap<BM = any> = BM extends BuilderMap
+export type ApiConfigMap<BM = any> = BM extends BuilderMap
   ? {
-      [K in keyof BM]: ApiFromBuilder<BM[K]>;
+      [K in keyof BM]: ApiConfigFromBuilder<BM[K]>;
     }
   : never;
 
@@ -45,15 +51,15 @@ export type BuilderMapX<BM> = BM extends BuilderMap
     }
   : never;
 
-export type ApiMapX<BM> = BM extends BuilderMap
+export type ApiConfigMapX<BM> = BM extends BuilderMap
   ? {
-      [K in keyof BuilderMapX<BM>]: ApiFromBuilder<BuilderMapX<BM>[K]>;
+      [K in keyof BuilderMapX<BM>]: ApiConfigFromBuilder<BuilderMapX<BM>[K]>;
     }
   : never;
 
-export type GetApis<A extends ApisStore<any, any>> = A extends ApisStore<
+export type GetApisConfig<A extends ApisStore<any, any>> = A extends ApisStore<
   any,
   infer I
 >
-  ? ApiMapX<I>
+  ? ApiConfigMapX<I>
   : never;
