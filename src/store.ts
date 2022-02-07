@@ -1,5 +1,5 @@
 import {GraphQLClient, RequestDocument} from "graphql-request";
-import {ApiConfigMap, ApiConfigMapX} from ".";
+import {Api, ApiConfig, ApiConfigMap, ApiConfigMapX} from ".";
 import {
   Builder,
   BuilderMap,
@@ -61,8 +61,8 @@ export class ApisStore<
 }
 
 export const createApiBuilder = <V>(document: RequestDocument): Builder<V> => {
-  return (client: GraphQLClient) =>
-    (options: ClientApisRequestOptions<V>) =>
+  return (client: GraphQLClient): ApiConfig<V> =>
+    (options: ClientApisRequestOptions<V>): Api =>
     async () =>
       client.request({document, ...options});
 };
