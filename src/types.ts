@@ -19,10 +19,6 @@ export type ApiConfig<V = Variables> = (
   opts?: ClientApisRequestOptions<V>
 ) => Api;
 
-// export type Api<V = Variables> = (
-//   opts?: ClientApisRequestOptions<V>
-// ) => () => Promise<any>;
-
 export type Builder<V = Variables> = (client: GraphQLClient) => ApiConfig<V>;
 
 export type ClientApisConfig<B extends BuilderMap> = {
