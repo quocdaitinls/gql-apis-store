@@ -15,7 +15,7 @@ export type ClientApisRequestOptions<V = Variables> = Omit<
 
 export type Api<V = Variables> = (
   opts?: ClientApisRequestOptions<V>
-) => Promise<any>;
+) => () => Promise<any>;
 
 export type Builder<V = Variables> = (client: GraphQLClient) => Api<V>;
 
