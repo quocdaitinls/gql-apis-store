@@ -21,11 +21,13 @@ export type ApiConfig<V = Variables> = (
 
 export type Builder<V = Variables> = (client: GraphQLClient) => ApiConfig<V>;
 
+export type GraphQLClientConfig = {
+  url: string;
+  opts?: RequestInit;
+};
+
 export type ClientApisConfig<B extends BuilderMap> = {
-  client: {
-    url: string;
-    opts?: RequestInit;
-  };
+  client: GraphQLClientConfig;
   builders: B[];
 };
 
