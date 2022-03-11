@@ -37,12 +37,7 @@ export type BuilderMap = {
   [key: string]: Builder<any>;
 };
 
-export type ApiConfigFromBuilder<B extends Builder> = B extends Builder<
-  infer V,
-  infer T
->
-  ? ApiConfig<V, T>
-  : never;
+export type ApiConfigFromBuilder<B extends Builder> = ReturnType<B>;
 
 export type ApiConfigMap<BM = any> = BM extends BuilderMap
   ? {
