@@ -69,9 +69,8 @@ export const createApiBuilder = <V, T = any>(
       try {
         const data = client.request<T, V>({document, ...options});
         return data;
-      } catch (errors) {
-        console.log(errors);
-        return null;
+      } catch (errors: any) {
+        return errors;
       }
     };
 };
