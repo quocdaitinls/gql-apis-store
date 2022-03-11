@@ -66,11 +66,13 @@ export const createApiBuilder = <V, T = any>(
   return (client: GraphQLClient): ApiConfig<V, T> =>
     (options: ClientApisRequestOptions<V>): Api<T> =>
     async () => {
-      try {
-        const data = client.request<T, V>({document, ...options});
-        return data;
-      } catch (errors: any) {
-        return errors;
-      }
+      // try {
+      //   const data = client.request<T, V>({document, ...options});
+      //   return data;
+      // } catch (errors: any) {
+      //   return errors;
+      // }
+
+      return client.request<T, V>({document, ...options});
     };
 };
