@@ -13,13 +13,15 @@ export type ClientApisRequestOptions<V = Variables> = Omit<
   "document"
 >;
 
-export type Api = () => Promise<any>;
+export type Api<T = any> = () => Promise<T>;
 
-export type ApiConfig<V = Variables> = (
+export type ApiConfig<V = Variables, T = any> = (
   opts?: ClientApisRequestOptions<V>
-) => Api;
+) => Api<T>;
 
-export type Builder<V = Variables> = (client: GraphQLClient) => ApiConfig<V>;
+export type Builder<V = Variables, T = any> = (
+  client: GraphQLClient
+) => ApiConfig<V, T>;
 
 export type GraphQLClientConfig = {
   url: string;

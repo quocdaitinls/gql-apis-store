@@ -60,9 +60,11 @@ export class ApisStore<
   }
 }
 
-export const createApiBuilder = <V>(document: RequestDocument): Builder<V> => {
+export const createApiBuilder = <V, T = any>(
+  document: RequestDocument
+): Builder<V> => {
   return (client: GraphQLClient): ApiConfig<V> =>
     (options: ClientApisRequestOptions<V>): Api =>
     async () =>
-      client.request({document, ...options});
+      client.request<T, V>({document, ...options});
 };
