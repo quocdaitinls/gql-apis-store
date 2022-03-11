@@ -62,9 +62,9 @@ export class ApisStore<
 
 export const createApiBuilder = <V, T = any>(
   document: RequestDocument
-): Builder<V> => {
-  return (client: GraphQLClient): ApiConfig<V> =>
-    (options: ClientApisRequestOptions<V>): Api =>
+): Builder<V, T> => {
+  return (client: GraphQLClient): ApiConfig<V, T> =>
+    (options: ClientApisRequestOptions<V>): Api<T> =>
     async () =>
       client.request<T, V>({document, ...options});
 };
