@@ -1,4 +1,4 @@
-import {GraphQLClient, RequestDocument} from "graphql-request";
+import {ClientError, GraphQLClient, RequestDocument} from "graphql-request";
 import {Api, ApiConfig, ApiConfigMap, ApiConfigMapX} from ".";
 import {
   Builder,
@@ -65,16 +65,10 @@ export const createApiBuilder = <V, T = any>(
 ): Builder<V, T> => {
   return (client: GraphQLClient): ApiConfig<V, T> =>
     (options: ClientApisRequestOptions<V>): Api<T> =>
-    async () => {
-      // try {
-      //   const data = client.request<T, V>({document, ...options});
-      //   return data;
-      // } catch (errors: any) {
-      //   return errors;
-      // }
-
-      return client.request<T, V>({document, ...options}).catch((error) => {
-        return null;
-      });
-    };
+    async () =>
+      client
+        .request<T, V>({document, ...options})
+        .catch((error: ClientError) => {
+          return error.response.errors;
+        });
 };

@@ -1,4 +1,5 @@
 import {GraphQLClient, RequestOptions, Variables} from "graphql-request";
+import {GraphQLError} from "graphql-request/dist/types";
 import {RequestInit} from "graphql-request/dist/types.dom";
 import {ApisStore} from "./store";
 
@@ -13,7 +14,7 @@ export type ClientApisRequestOptions<V = Variables> = Omit<
   "document"
 >;
 
-export type Api<T = any> = () => Promise<T>;
+export type Api<T = any> = () => Promise<T | GraphQLError[]>;
 
 export type ApiConfig<V = Variables, T = any> = (
   opts?: ClientApisRequestOptions<V>
