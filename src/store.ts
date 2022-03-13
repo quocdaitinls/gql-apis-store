@@ -75,7 +75,7 @@ export const createApiBuilder = <TVariables, TData = any>(
           return data;
         })
         .catch((error: ClientError) => {
-          apiOptions.onError(error.response.errors);
+          apiOptions.onError(error.response?.errors);
           return null;
         });
 };
