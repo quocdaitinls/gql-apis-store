@@ -72,33 +72,32 @@ export class MyApi<TVariables, TData> {
     onError: (err) => err,
   };
 
-  private client: GraphQLClient;
-  private query: string;
-  private options: ApiOptions<TVariables, TData>;
+  private _client: GraphQLClient;
+  private _query: string;
+  private _options: ApiOptions<TVariables, TData>;
   private api: Api<TData>;
 
-  rawResult: RawResult<TData>;
+  rawResult: RawResult<TData> = null;
 
   constructor(
     client: GraphQLClient,
     query: string,
     opts?: ApiOptions<TVariables, TData>
   ) {
-    this.client = client;
-    this.query = query;
+    this._client = client;
+    this._query = query;
 
     this.configure(opts);
-    this.initApi();
   }
 
   initApi() {
-    const {reqOpts, onSuccess, onError} = this.options;
-    const {client, query} = this;
+    const {reqOpts, onSuccess, onError} = this._options;
+    const {_client, _query} = this;
 
     this.api = async () => {
       let errors: GraphQLError[];
-      let result: RawResult<TData> = await client
-        .rawRequest<TData, TVariables>({query, ...reqOpts})
+      let result: RawResult<TData> = await _client
+        .rawRequest<TData, TVariables>({query: _query, ...reqOpts})
         .catch((error: ClientError) => {
           errors = error.response.errors;
           return null;
@@ -115,32 +114,37 @@ export class MyApi<TVariables, TData> {
   }
 
   configure(opts: ApiOptions<TVariables, TData>) {
-    this.options = {...this.defaultOptions, ...opts};
+    this._options = {...this.defaultOptions, ...opts};
+    this.initApi();
     return this;
   }
 
   setRequestOptions(options: ReqOptions<TVariables>) {
-    this.options.reqOpts = options;
+    this._options.reqOpts = options;
     return this;
   }
 
   setVariables(values: TVariables) {
-    this.options.reqOpts.variables = values;
+    this._options.reqOpts.variables = values;
     return this;
   }
 
   setHeaders(headers: RequestInit["headers"]) {
-    this.options.reqOpts.requestHeaders = headers;
+    this._options.reqOpts.requestHeaders = headers;
     return this;
   }
 
   setSignal(signal: RequestInit["signal"]) {
-    this.options.reqOpts.signal = signal;
+    this._options.reqOpts.signal = signal;
     return this;
   }
 
   exec() {
     return this.api();
+  }
+
+  get options() {
+    return this._options;
   }
 }
 
