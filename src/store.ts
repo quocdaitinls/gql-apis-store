@@ -1,15 +1,18 @@
-import {ClientError, GraphQLClient, RequestDocument} from "graphql-request";
+import {ClientError, GraphQLClient} from "graphql-request";
 import {GraphQLError} from "graphql-request/dist/types";
-import {Api, ApiConfig, ApiConfigMap, ApiConfigMapX} from ".";
 import {
+  Api,
+  ApiMap,
+  ApiMapX,
   ApiOptions,
   Builder,
   BuilderMap,
   BuilderMapX,
   ClientApisConfig,
+  RawResult,
   ReqOptions,
   UnionToIntersection,
-} from "./types";
+} from ".";
 
 export class ApisStore<
   BM extends BuilderMap = BuilderMap,
@@ -18,13 +21,13 @@ export class ApisStore<
   protected _config: ClientApisConfig<BM>;
   protected _client: GraphQLClient;
   protected _builderMap: BuilderMapX<IBM>;
-  protected _apiMap: ApiConfigMapX<IBM>;
+  protected _apiMap: ApiMapX<IBM>;
 
   constructor(config: ClientApisConfig<BM>) {
     this._config = config;
     this.initClient();
     this.initBuilderMap();
-    this.createApis();
+    this.initApiMap();
   }
 
   protected initClient() {
@@ -41,12 +44,12 @@ export class ApisStore<
     this._builderMap = result as BuilderMapX<IBM>;
   }
 
-  protected createApis() {
-    let result: ApiConfigMap = {};
+  protected initApiMap() {
+    let result: ApiMap = {};
     for (let name in this._builderMap) {
       result[name] = this._builderMap[name](this._client);
     }
-    this._apiMap = result as ApiConfigMapX<IBM>;
+    this._apiMap = result as ApiMapX<IBM>;
   }
 
   get config() {
@@ -62,24 +65,84 @@ export class ApisStore<
   }
 }
 
-export const createApiBuilder = <TVariables, TData = any>(
-  document: RequestDocument
-): Builder<TVariables, TData> => {
-  return (client: GraphQLClient): ApiConfig<TVariables, TData> =>
-    (options: ReqOptions<TVariables>): Api<TData> =>
-    async (apiOptions?: ApiOptions<TData>) => {
-      const {onSuccess, onError} = apiOptions;
+export class MyApi<TVariables, TData> {
+  private defaultOptions: ApiOptions<TVariables, TData> = {};
+
+  private client: GraphQLClient;
+  private query: string;
+  private options: ApiOptions<TVariables, TData>;
+  private api: Api<TData>;
+
+  rawResult: RawResult<TData>;
+
+  constructor(
+    client: GraphQLClient,
+    query: string,
+    opts?: ApiOptions<TVariables, TData>
+  ) {
+    this.client = client;
+    this.query = query;
+    this.options = opts || this.defaultOptions;
+
+    this.initApi();
+  }
+
+  initApi() {
+    const {reqOpts, onSuccess, onError} = this.options;
+    const {client, query} = this;
+
+    this.api = async () => {
       let errors: GraphQLError[];
-      let data = await client
-        .request<TData, TVariables>({document, ...options})
-        .catch<TData>((error: ClientError) => {
+      let result: RawResult<TData> = await client
+        .rawRequest<TData, TVariables>({query, ...reqOpts})
+        .catch((error: ClientError) => {
           errors = error.response.errors;
           return null;
         });
 
-      if (data && typeof onSuccess === "function") await onSuccess(data);
+      this.rawResult = result;
+
+      if (result?.data && typeof onSuccess === "function")
+        await onSuccess(result.data);
       else if (errors && typeof onError === "function") await onError(errors);
 
-      return data;
+      return result?.data ?? null;
     };
+  }
+
+  configure(opts: ApiOptions<TVariables, TData>) {
+    this.options = opts;
+    return this;
+  }
+
+  setRequestOptions(options: ReqOptions<TVariables>) {
+    this.options.reqOpts = options;
+    return this;
+  }
+
+  setVariables(values: TVariables) {
+    this.options.reqOpts.variables = values;
+    return this;
+  }
+
+  setHeaders(headers: RequestInit["headers"]) {
+    this.options.reqOpts.requestHeaders = headers;
+    return this;
+  }
+
+  setSignal(signal: RequestInit["signal"]) {
+    this.options.reqOpts.signal = signal;
+    return this;
+  }
+
+  exec() {
+    return this.api();
+  }
+}
+
+export const createApiBuilder = <TVariables, TData = any>(
+  query: string
+): Builder<TVariables, TData> => {
+  return (client: GraphQLClient): MyApi<TVariables, TData> =>
+    new MyApi(client, query);
 };
