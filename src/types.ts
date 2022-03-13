@@ -65,7 +65,7 @@ export type ApiMapX<BM> = BM extends BuilderMap
     }
   : never;
 
-export type ApiMapFromStore<AS extends Store<any, any>> = AS extends Store<
+export type ApiMapFromStore<S extends Store<any, any>> = S extends Store<
   any,
   infer I
 >
