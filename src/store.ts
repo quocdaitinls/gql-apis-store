@@ -1,11 +1,13 @@
 import {ClientError, GraphQLClient, RequestDocument} from "graphql-request";
+import {GraphQLError} from "graphql-request/dist/types";
 import {Api, ApiConfig, ApiConfigMap, ApiConfigMapX} from ".";
 import {
+  ApiOptions,
   Builder,
   BuilderMap,
   BuilderMapX,
   ClientApisConfig,
-  ClientApisRequestOptions,
+  ReqOptions,
   UnionToIntersection,
 } from "./types";
 
@@ -60,15 +62,20 @@ export class ApisStore<
   }
 }
 
-export const createApiBuilder = <V, T = any>(
+export const createApiBuilder = <TVariables, TData = any>(
   document: RequestDocument
-): Builder<V, T> => {
-  return (client: GraphQLClient): ApiConfig<V, T> =>
-    (options: ClientApisRequestOptions<V>): Api<T> =>
-    async () =>
+): Builder<TVariables, TData> => {
+  return (client: GraphQLClient): ApiConfig<TVariables, TData> =>
+    (options: ReqOptions<TVariables>): Api<TData> =>
+    async (apiOptions?: ApiOptions<TData>) =>
       client
-        .request<T, V>({document, ...options})
+        .request<TData, TVariables>({document, ...options})
+        .then(async (data) => {
+          await apiOptions.onSuccess(data);
+          return data;
+        })
         .catch((error: ClientError) => {
-          return error.response.errors;
+          apiOptions.onError(error.response.errors);
+          return null;
         });
 };

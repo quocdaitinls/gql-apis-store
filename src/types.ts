@@ -9,15 +9,17 @@ export type UnionToIntersection<U> = (
   ? I
   : never;
 
-export type ClientApisRequestOptions<V = Variables> = Omit<
-  RequestOptions<V>,
-  "document"
->;
+export type ReqOptions<V = Variables> = Omit<RequestOptions<V>, "document">;
 
-export type Api<T = any> = () => Promise<T | GraphQLError[]>;
+export type Api<T = any> = (opts?: ApiOptions<T>) => Promise<T>;
+
+export type ApiOptions<T> = {
+  onSuccess?: (value: T) => any | void;
+  onError?: (errors: GraphQLError[]) => any | void;
+};
 
 export type ApiConfig<V = Variables, T = any> = (
-  opts?: ClientApisRequestOptions<V>
+  opts?: ReqOptions<V>
 ) => Api<T>;
 
 export type Builder<V = Variables, T = any> = (
