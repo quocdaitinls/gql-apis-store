@@ -71,11 +71,12 @@ export const createApiBuilder = <TVariables, TData = any>(
       client
         .request<TData, TVariables>({document, ...options})
         .then((data) => {
-          apiOptions.onSuccess(data);
+          apiOptions?.onSuccess(data);
           return data;
         })
         .catch((error: ClientError) => {
-          apiOptions.onError(error.response?.errors);
+          console.log(error);
+          apiOptions?.onError(error.response?.errors);
           return null;
         });
 };
