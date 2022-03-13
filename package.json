@@ -1,6 +1,8 @@
 {
   "name": "gql-apis-store",
   "version": "2.0.9",
+  "main": "./build/index.js",
+  "types": "./build/index.d.ts",
   "description": "",
   "files": [
     "build/**/*"
