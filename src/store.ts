@@ -74,7 +74,7 @@ export class MyApi<TVariables, TData> {
 
   private _client: GraphQLClient;
   private _query: string;
-  private _options: ApiOptions<TVariables, TData>;
+  private _options: ApiOptions<TVariables, TData> = this.defaultOptions;
   private api: Api<TData>;
 
   rawResult: RawResult<TData> = null;
@@ -90,7 +90,7 @@ export class MyApi<TVariables, TData> {
     this.configure(opts);
   }
 
-  initApi() {
+  build() {
     const {reqOpts, onSuccess, onError} = this._options;
     const {_client, _query} = this;
 
@@ -114,28 +114,33 @@ export class MyApi<TVariables, TData> {
   }
 
   configure(opts: ApiOptions<TVariables, TData>) {
-    this._options = {...this.defaultOptions, ...opts};
-    this.initApi();
+    this._options = {...this.options, ...opts};
+    this.build();
     return this;
   }
 
   setRequestOptions(options: ReqOptions<TVariables>) {
-    this._options.reqOpts = options;
+    this.configure({reqOpts: options});
     return this;
   }
 
   setVariables(values: TVariables) {
-    this._options.reqOpts.variables = values;
+    this.setRequestOptions({variables: values});
     return this;
   }
 
   setHeaders(headers: RequestInit["headers"]) {
-    this._options.reqOpts.requestHeaders = headers;
+    this.setRequestOptions({requestHeaders: headers});
     return this;
   }
 
   setSignal(signal: RequestInit["signal"]) {
-    this._options.reqOpts.signal = signal;
+    this.setRequestOptions({signal});
+    return this;
+  }
+
+  clearConfig() {
+    this._options = this.defaultOptions;
     return this;
   }
 
