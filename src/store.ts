@@ -1,5 +1,10 @@
-import {ClientError, GraphQLClient} from "graphql-request";
-import {GraphQLError} from "graphql-request/dist/types";
+// import {ClientError, GraphQLClient} from "graphql-request";
+// import {GraphQLError} from "graphql-request/dist/types";
+import {GraphQLClient} from "../node_modules/graphql-request/dist/index";
+import {
+  ClientError,
+  GraphQLError,
+} from "../node_modules/graphql-request/dist/types";
 import {
   Api,
   ApiMap,
