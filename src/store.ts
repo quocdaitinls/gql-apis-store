@@ -86,8 +86,8 @@ export class MyApi<TVariables, TData> {
   ) {
     this.client = client;
     this.query = query;
-    this.options = opts || this.defaultOptions;
 
+    this.configure(opts);
     this.initApi();
   }
 
@@ -115,7 +115,7 @@ export class MyApi<TVariables, TData> {
   }
 
   configure(opts: ApiOptions<TVariables, TData>) {
-    this.options = opts;
+    this.options = {...this.defaultOptions, ...opts};
     return this;
   }
 
