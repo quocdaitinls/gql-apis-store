@@ -16,7 +16,9 @@
     "build": "tsc",
     "upgithub": "git add . && git commit -m \"Update\" && git push",
     "bulish": "npm run build && npm publish",
-    "pub": "npm run upgithub && npm version major && npm run bulish"
+    "pub-major": "npm run upgithub && npm version major && npm run bulish",
+    "pub-minor": "npm run upgithub && npm version minor && npm run bulish",
+    "pub-patch": "npm run upgithub && npm version patch && npm run bulish"
   },
   "keywords": [],
   "author": "Quoc Dai",

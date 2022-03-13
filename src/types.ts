@@ -10,7 +10,7 @@ export type UnionToIntersection<U> = (
   ? I
   : never;
 
-export type ReqOptions<V = Variables> = Omit<RawRequestOptions<V>, "document">;
+export type ReqOptions<V = Variables> = Omit<RawRequestOptions<V>, "query">;
 
 export type Api<T = any> = () => Promise<T>;
 

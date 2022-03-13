@@ -66,7 +66,11 @@ export class ApisStore<
 }
 
 export class MyApi<TVariables, TData> {
-  private defaultOptions: ApiOptions<TVariables, TData> = {};
+  private defaultOptions: ApiOptions<TVariables, TData> = {
+    reqOpts: {},
+    onSuccess: (data) => data,
+    onError: (err) => err,
+  };
 
   private client: GraphQLClient;
   private query: string;
