@@ -70,8 +70,8 @@ export const createApiBuilder = <TVariables, TData = any>(
     async (apiOptions?: ApiOptions<TData>) =>
       client
         .request<TData, TVariables>({document, ...options})
-        .then(async (data) => {
-          await apiOptions.onSuccess(data);
+        .then((data) => {
+          apiOptions.onSuccess(data);
           return data;
         })
         .catch((error: ClientError) => {
