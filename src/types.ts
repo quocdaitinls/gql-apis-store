@@ -1,8 +1,7 @@
 import {GraphQLClient, RawRequestOptions, Variables} from "graphql-request";
 import {GraphQLError} from "graphql-request/dist/types";
 import {Headers, RequestInit} from "graphql-request/dist/types.dom";
-import {GQLApi} from ".";
-import {Store} from "./store";
+import {GQLApi, Store} from "./store";
 
 export type UnionToIntersection<U> = (
   U extends any ? (k: U) => void : never

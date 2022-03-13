@@ -12,7 +12,7 @@ import {
   ReqOptions,
   UnionToIntersection,
   MyApiOptions,
-} from ".";
+} from "./types";
 
 export class Store<
   BM extends BuilderMap = BuilderMap,
