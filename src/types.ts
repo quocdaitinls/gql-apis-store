@@ -1,10 +1,6 @@
-// import {GraphQLClient, RawRequestOptions, Variables} from "graphql-request";
-// import {GraphQLError} from "graphql-request/dist/types";
-// import {Headers, RequestInit} from "graphql-request/dist/types.dom";
-import {GraphQLClient} from "../node_modules/graphql-request/dist/index";
-import {Variables} from "../node_modules/graphql-request/dist/types";
-import {GraphQLError} from "../node_modules/graphql-request/dist/types";
-import {RawRequestOptions} from "../node_modules/graphql-request/dist/types";
+import {GraphQLClient, RawRequestOptions, Variables} from "graphql-request";
+import {GraphQLError} from "graphql-request/dist/types";
+import {Headers, RequestInit} from "graphql-request/dist/types.dom";
 import {GQLApi, Store} from "./store";
 
 export type UnionToIntersection<U> = (
