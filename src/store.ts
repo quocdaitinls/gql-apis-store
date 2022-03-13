@@ -67,16 +67,17 @@ export const createApiBuilder = <TVariables, TData = any>(
 ): Builder<TVariables, TData> => {
   return (client: GraphQLClient): ApiConfig<TVariables, TData> =>
     (options: ReqOptions<TVariables>): Api<TData> =>
-    async (apiOptions?: ApiOptions<TData>) =>
-      client
+    async (apiOptions?: ApiOptions<TData>) => {
+      let errors: GraphQLError[];
+
+      const data = await client
         .request<TData, TVariables>({document, ...options})
-        .then((data) => {
-          apiOptions?.onSuccess(data);
-          return data;
-        })
-        .catch((error: ClientError) => {
-          console.log(error);
-          apiOptions?.onError(error.response?.errors);
+        .catch<TData>((error: ClientError) => {
+          errors = error.response.errors;
           return null;
         });
+
+      console.log(data, errors);
+      return data;
+    };
 };
