@@ -1,4 +1,4 @@
 import React from "react";
-import {ApisStore} from "./store";
+import {Store} from "./store";
 
-export const ApisContext = React.createContext<ApisStore>(null);
+export const StoreContext = React.createContext<Store>(null);

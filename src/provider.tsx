@@ -1,11 +1,11 @@
 import React from "react";
-import {ApisContext} from "./context";
-import {ApisStore} from "./store";
+import {StoreContext} from "./context";
+import {Store} from "./store";
 
-export const Provider: React.FC<{value: ApisStore}> = (props) => {
+export const Provider: React.FC<{value: Store}> = (props) => {
   return (
-    <ApisContext.Provider value={props.value}>
+    <StoreContext.Provider value={props.value}>
       {props.children}
-    </ApisContext.Provider>
+    </StoreContext.Provider>
   );
 };

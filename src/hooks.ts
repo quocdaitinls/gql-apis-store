@@ -1,11 +1,10 @@
 import React from "react";
-// import {GetApisConfig} from ".";
-import {ApisContext} from "./context";
-import {ApisStore} from "./store";
+import {StoreContext} from "./context";
+import {Store} from "./store";
 import {ApiMapFromStore} from "./types";
 
-export const useStore = <S extends ApisStore>() =>
-  React.useContext(ApisContext) as S;
+export const useStore = <S extends Store>(): S =>
+  React.useContext(StoreContext) as S;
 
-export const useGQLApis = <S extends ApisStore>() =>
-  React.useContext(ApisContext).apis as ApiMapFromStore<S>;
+export const useGQLApis = <S extends Store>(): ApiMapFromStore<S> =>
+  React.useContext(StoreContext).apis as ApiMapFromStore<S>;

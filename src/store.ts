@@ -4,26 +4,26 @@ import {
   Api,
   ApiMap,
   ApiMapX,
-  ApiOptions,
   Builder,
   BuilderMap,
   BuilderMapX,
-  ClientApisConfig,
+  StoreOptions,
   RawResult,
   ReqOptions,
   UnionToIntersection,
-} from ".";
+  MyApiOptions,
+} from "./types";
 
-export class ApisStore<
+export class Store<
   BM extends BuilderMap = BuilderMap,
   IBM extends UnionToIntersection<BM> = UnionToIntersection<BM>
 > {
-  protected _config: ClientApisConfig<BM>;
+  protected _config: StoreOptions<BM>;
   protected _client: GraphQLClient;
   protected _builderMap: BuilderMapX<IBM>;
   protected _apiMap: ApiMapX<IBM>;
 
-  constructor(config: ClientApisConfig<BM>) {
+  constructor(config: StoreOptions<BM>) {
     this._config = config;
     this.initClient();
     this.initBuilderMap();
@@ -65,8 +65,8 @@ export class ApisStore<
   }
 }
 
-export class MyApi<TVariables, TData> {
-  private defaultOptions: ApiOptions<TVariables, TData> = {
+export class GQLApi<TVariables, TData> {
+  private defaultOptions: MyApiOptions<TVariables, TData> = {
     reqOpts: {},
     onSuccess: (data) => data,
     onError: (err) => err,
@@ -74,7 +74,7 @@ export class MyApi<TVariables, TData> {
 
   private _client: GraphQLClient;
   private _query: string;
-  private _options: ApiOptions<TVariables, TData> = this.defaultOptions;
+  private _options: MyApiOptions<TVariables, TData> = this.defaultOptions;
   private api: Api<TData>;
 
   rawResult: RawResult<TData> = null;
@@ -82,7 +82,7 @@ export class MyApi<TVariables, TData> {
   constructor(
     client: GraphQLClient,
     query: string,
-    opts?: ApiOptions<TVariables, TData>
+    opts?: MyApiOptions<TVariables, TData>
   ) {
     this._client = client;
     this._query = query;
@@ -113,7 +113,7 @@ export class MyApi<TVariables, TData> {
     };
   }
 
-  configure(opts: ApiOptions<TVariables, TData>) {
+  configure(opts: MyApiOptions<TVariables, TData>) {
     this._options = {...this.options, ...opts};
     this.build();
     return this;
@@ -156,6 +156,6 @@ export class MyApi<TVariables, TData> {
 export const createApiBuilder = <TVariables, TData = any>(
   query: string
 ): Builder<TVariables, TData> => {
-  return (client: GraphQLClient): MyApi<TVariables, TData> =>
-    new MyApi(client, query);
+  return (client: GraphQLClient): GQLApi<TVariables, TData> =>
+    new GQLApi(client, query);
 };
