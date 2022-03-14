@@ -18,10 +18,14 @@ export type RawResult<T = any> = {
   status: number;
 };
 
+export type ApiSuccessFunction<T> = (value: T) => any;
+
+export type ApiErrorFunction = (errors: GraphQLError[]) => any;
+
 export type ApiOptions<V, T> = {
   reqOpts?: ReqOptions<V>;
-  onSuccess?: (value: T) => any;
-  onError?: (errors: GraphQLError[]) => any;
+  onSuccess?: ApiSuccessFunction<T>;
+  onError?: ApiErrorFunction;
 };
 
 export type GraphQLClientOptions = {
