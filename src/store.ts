@@ -101,7 +101,7 @@ export class GQLApi<TVariables, TData> {
         .rawRequest<TData, TVariables>({query: _query, ...reqOpts})
         .catch((error: ClientError) => {
           console.log("Error:   ", error);
-          console.dir(error);
+          console.dir(JSON.stringify(error));
           console.log("Typeof Error:   ", typeof error);
           errors = error.response.errors;
           return null;
