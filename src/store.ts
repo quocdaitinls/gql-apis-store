@@ -2,7 +2,7 @@ import {ClientError, GraphQLClient} from "graphql-request";
 import {GraphQLError} from "graphql-request/dist/types";
 
 import {
-  Api,
+  Fetcher,
   ApiMap,
   ApiMapX,
   Builder,
@@ -12,7 +12,7 @@ import {
   RawResult,
   ReqOptions,
   UnionToIntersection,
-  MyApiOptions,
+  ApiOptions,
 } from "./types";
 
 export class Store<
@@ -67,7 +67,7 @@ export class Store<
 }
 
 export class GQLApi<TVariables, TData> {
-  private defaultOptions: MyApiOptions<TVariables, TData> = {
+  private defaultOptions: ApiOptions<TVariables, TData> = {
     reqOpts: {},
     onSuccess: (data) => data,
     onError: (err) => err,
@@ -75,15 +75,15 @@ export class GQLApi<TVariables, TData> {
 
   private _client: GraphQLClient;
   private _query: string;
-  private _options: MyApiOptions<TVariables, TData> = this.defaultOptions;
-  private api: Api<TData>;
+  private _options: ApiOptions<TVariables, TData> = this.defaultOptions;
+  private fetcher: Fetcher<TData>;
 
   rawResult: RawResult<TData> = null;
 
   constructor(
     client: GraphQLClient,
     query: string,
-    opts?: MyApiOptions<TVariables, TData>
+    opts?: ApiOptions<TVariables, TData>
   ) {
     this._client = client;
     this._query = query;
@@ -91,11 +91,11 @@ export class GQLApi<TVariables, TData> {
     this.configure(opts);
   }
 
-  build() {
+  buildFetcher() {
     const {reqOpts, onSuccess, onError} = this._options;
     const {_client, _query} = this;
 
-    this.api = async () => {
+    this.fetcher = async () => {
       let errors: GraphQLError[];
       let result: RawResult<TData> = await _client
         .rawRequest<TData, TVariables>({query: _query, ...reqOpts})
@@ -114,9 +114,9 @@ export class GQLApi<TVariables, TData> {
     };
   }
 
-  configure(opts: MyApiOptions<TVariables, TData>) {
+  configure(opts: ApiOptions<TVariables, TData>) {
     this._options = {...this.options, ...opts};
-    this.build();
+    this.buildFetcher();
     return this;
   }
 
@@ -146,7 +146,7 @@ export class GQLApi<TVariables, TData> {
   }
 
   exec() {
-    return this.api();
+    return this.fetcher();
   }
 
   get options() {
@@ -154,7 +154,7 @@ export class GQLApi<TVariables, TData> {
   }
 }
 
-export const createApiBuilder = <TVariables, TData = any>(
+export const createGQLApiBuilder = <TVariables, TData = any>(
   query: string
 ): Builder<TVariables, TData> => {
   return (client: GraphQLClient): GQLApi<TVariables, TData> =>

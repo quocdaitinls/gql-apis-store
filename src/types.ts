@@ -18,7 +18,7 @@ export type RawResult<T = any> = {
   status: number;
 };
 
-export type MyApiOptions<V, T> = {
+export type ApiOptions<V, T> = {
   reqOpts?: ReqOptions<V>;
   onSuccess?: (value: T) => any;
   onError?: (errors: GraphQLError[]) => any;
@@ -34,7 +34,7 @@ export type StoreOptions<BM extends BuilderMap> = {
   builders: BM[];
 };
 
-export type Api<T = any> = () => Promise<T>;
+export type Fetcher<T = any> = () => Promise<T>;
 
 export type Builder<V = Variables, T = any> = (
   client: GraphQLClient
