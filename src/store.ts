@@ -100,15 +100,9 @@ export class GQLApi<TVariables, TData> {
       let result: RawResult<TData> = await _client
         .rawRequest<TData, TVariables>({query: _query, ...reqOpts})
         .catch((error: ClientError) => {
-          console.log("Error:   ", error);
-          console.dir(JSON.parse(JSON.stringify(error)));
-          console.log("Typeof Error:   ", typeof error);
-          console.log(error instanceof ClientError);
           errors = error.response.errors;
           return null;
         });
-
-      console.log("Result:   ", result);
 
       this.rawResult = result;
 
