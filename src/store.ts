@@ -121,7 +121,7 @@ export class GQLApi<TVariables, TData> {
   }
 
   setRequestOptions(options: ReqOptions<TVariables>) {
-    this.configure({reqOpts: options});
+    this.configure({reqOpts: {...this._options.reqOpts, ...options}});
     return this;
   }
 
