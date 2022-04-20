@@ -7,4 +7,6 @@ export const useStore = <S extends Store>(): S =>
   React.useContext(StoreContext) as S;
 
 export const useGQLApis = <S extends Store>(): ApiMapFromStore<S> =>
-  React.useContext(StoreContext).apis as ApiMapFromStore<S>;
+  useStore().apis as ApiMapFromStore<S>;
+
+export const useGQLQueryClient = () => useStore().client;
